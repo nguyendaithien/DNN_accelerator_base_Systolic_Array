@@ -1,0 +1,12 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
+-access
++rwc
+-sv
+buffer_array.sv
+RAM_2ports.sv
+tb.sv
+-linedebug
+-gui

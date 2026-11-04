@@ -1,0 +1,11 @@
+//
+// File created by:  xrun
+// Do not modify this file
+
+s1::(01Nov2026:10:26:45):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_10_26_45)
+s2::(01Nov2026:10:29:59):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_10_29_59)
+s3::(01Nov2026:10:31:21):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_10_31_21)
+s4::(01Nov2026:10:45:44):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_10_45_44)
+s5::(01Nov2026:12:53:19):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_12_53_19)
+s6::(01Nov2026:12:55:15):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_12_55_15)
+s7::(01Nov2026:14:07:38):( xrun -access +rwc -sv -f list.f -linedebug -input wave.tcl )&&(./xcelium.d/env.d/env.history.01Nov2026_14_07_38)

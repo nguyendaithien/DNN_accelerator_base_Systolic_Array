@@ -1,0 +1,93 @@
+#-----------------------------------------------------------
+# xsim v2024.1 (64-bit)
+# SW Build 5076996 on Wed May 22 18:36:09 MDT 2024
+# IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+# SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+# Start of session at: Wed Aug 12 22:36:31 2026
+# Process ID: 29803
+# Current directory: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs
+# Command line: xsim -mode tcl -source {xsim.dir/my_sim_snapshot/xsim_script.tcl}
+# Log file: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/xsim.log
+# Journal file: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/xsim.jou
+# Running On        :edabk
+# Platform          :CentOS
+# Operating System  :CentOS Linux release 7.9.2009 (Core)
+# Processor Detail  :AMD EPYC 7402 24-Core Processor
+# CPU Frequency     :1500.000 MHz
+# CPU Physical cores:48
+# CPU Logical cores :48
+# Host memory       :405447 MB
+# Swap memory       :137430 MB
+# Total Virtual     :542878 MB
+# Available Virtual :421508 MB
+#-----------------------------------------------------------
+source xsim.dir/my_sim_snapshot/xsim_script.tcl
+# xsim {my_sim_snapshot} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+Error: *** [1][0;31FAIL[m[ 0]: "[0;32m Check result 1 of PE[m" Actual = x Expect = 385) (150 ns)
+Time: 150 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+Error: *** [1][0;31FAIL[m[ 1]: "[0;32m Check result out of PE[m" Actual = x Expect = 385) (150 ns)
+Time: 150 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+*** [0][0;34mPASS[m[ 0]: "[0;32m Check result 2 of PE[m" Actual = 0 Expect = 0) (150 ns)
+Error: *** [1][0;31FAIL[m[ 2]: "[0;32m Check mac out of PE[m" Actual = x Expect = 385) (160 ns)
+Time: 160 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+ result 2 =          0
+ result 2          0
+ result 2          0
+ result 1          0
+Error: *** [1][0;31FAIL[m[ 3]: "[0;32m check mac out[m" Actual = 0 Expect = 18446744073709551614) (170 ns)
+Time: 170 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+ result 2          1
+ result 2          0
+ result 1          0
+*** [0][0;34mPASS[m[ 1]: "[0;32m check mac out[m" Actual = 0 Expect = 0) (190 ns)
+ result 2          5
+ result 2          1
+ result 1          0
+*** [0][0;34mPASS[m[ 2]: "[0;32m check mac out[m" Actual = 2 Expect = 2) (210 ns)
+ result 2         15
+ result 2          6
+ result 1          0
+*** [0][0;34mPASS[m[ 3]: "[0;32m check mac out[m" Actual = 4 Expect = 4) (230 ns)
+ result 2         35
+ result 2         19
+ result 1          0
+*** [0][0;34mPASS[m[ 4]: "[0;32m check mac out[m" Actual = 6 Expect = 6) (250 ns)
+ result 2         69
+ result 2         44
+ result 1          0
+*** [0][0;34mPASS[m[ 5]: "[0;32m check mac out[m" Actual = 8 Expect = 8) (270 ns)
+ result 2        121
+ result 2         85
+ result 1          0
+*** [0][0;34mPASS[m[ 6]: "[0;32m check mac out[m" Actual = 10 Expect = 10) (290 ns)
+ result 2        195
+ result 2        146
+ result 1          0
+*** [0][0;34mPASS[m[ 7]: "[0;32m check mac out[m" Actual = 12 Expect = 12) (310 ns)
+ result 2        295
+ result 2        231
+ result 1          0
+*** [0][0;34mPASS[m[ 8]: "[0;32m check mac out[m" Actual = 14 Expect = 14) (330 ns)
+ result 2        425
+ result 2        344
+ result 1          0
+*** [0][0;34mPASS[m[ 9]: "[0;32m check mac out[m" Actual = 16 Expect = 16) (350 ns)
+ result 2        589
+ result 2        489
+ result 1          0
+*** [0][0;34mPASS[m[10]: "[0;32m check mac out[m" Actual = 18 Expect = 18) (370 ns)
+Error: *** [1][0;31FAIL[m[ 4]: "[0;32m Check result 2 of PE[m" Actual = 570 Expect = 385) (380 ns)
+Time: 380 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+*** [0][0;34mPASS[m[11]: "[0;32m check mac out[m" Actual = 20 Expect = 20) (400 ns)
+Error: *** [1][0;31FAIL[m[ 5]: "[0;32m Check result out of PE[m" Actual = 0 Expect = 385) (400 ns)
+Time: 400 ns  Iteration: 0  Process: /tb/verify_1/verify_0  Scope: tb.verify_1.verify_0  File: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv Line: 55
+*** [0][0;34mPASS[m[12]: "[0;32m check mac out[m" Actual = 22 Expect = 22) (420 ns)
+*** [0][0;34mPASS[m[13]: "[0;32m check mac out[m" Actual = 24 Expect = 24) (440 ns)
+*** [0][0;34mPASS[m[14]: "[0;32m check mac out[m" Actual = 26 Expect = 26) (460 ns)
+*** [0][0;34mPASS[m[15]: "[0;32m check mac out[m" Actual = 28 Expect = 28) (480 ns)
+*** [0][0;34mPASS[m[16]: "[0;32m check mac out[m" Actual = 30 Expect = 30) (500 ns)
+$finish called at time : 1000510 ns : File "/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv" Line 62
+exit
+INFO: [Common 17-206] Exiting xsim at Wed Aug 12 22:36:35 2026...

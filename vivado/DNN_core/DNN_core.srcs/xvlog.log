@@ -1,0 +1,8 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE_array.v" into library work
+INFO: [VRFC 10-311] analyzing module PE_array
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE.v" into library work
+INFO: [VRFC 10-311] analyzing module PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/swapper.v" into library work
+INFO: [VRFC 10-311] analyzing module swapper
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv" into library work
+INFO: [VRFC 10-311] analyzing module tb

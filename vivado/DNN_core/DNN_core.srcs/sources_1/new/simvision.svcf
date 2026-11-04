@@ -1,0 +1,138 @@
+# SimVision Command Script (Sun Nov 01 10:21:40 AM +07 2026)
+#
+# Version 24.09.s013
+#
+# You can restore this configuration with:
+#
+#     simvision -input simvision.svcf
+#  or simvision -input simvision.svcf database1 database2 ...
+#
+
+
+#
+# Preferences
+#
+preferences set plugin-enable-svdatabrowser-new 1
+preferences set plugin-enable-groupscope 0
+preferences set sb-display-values 1
+preferences set plugin-enable-interleaveandcompare 0
+preferences set plugin-enable-waveformfrequencyplot 0
+
+#
+# Databases
+#
+array set dbNames ""
+set dbNames(realName1) [ database require waves -hints {
+	file ./waves.shm/waves.trn
+	file /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/waves.shm/waves.trn
+}]
+if {$dbNames(realName1) == ""} {
+    set dbNames(realName1) waves
+}
+#
+# Groups
+#
+catch {group new -name PE0_0 -overlay 0}
+catch {group new -name PE0_1 -overlay 0}
+catch {group new -name PE0_2 -overlay 0}
+group using PE0_0
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+
+group insert \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.clk}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.enable}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.reset_pe_1}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.reset_pe_2}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.sel_out_de_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.sel_out_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.write_out_en}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.mac_out[15:0]}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.result_1[15:0]}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.result_2[15:0]}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[0].pe_inst.m_reg[15:0]}]} ]
+group using PE0_1
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+
+group insert \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.clk}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.enable}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.reset_pe_1}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.reset_pe_2}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.sel_out_de_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.sel_out_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.write_out_en}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.mac_out[15:0]}]} ]
+group using PE0_2
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+
+group insert \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.clk}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.enable}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.reset_pe_1}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.reset_pe_2}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.sel_out_de_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.sel_out_mux}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.write_out_en}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.mac_out[15:0]}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.result_1[15:0]}]} ] \
+    [subst  {$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[2].pe_inst.result_2[15:0]}]} ]
+
+#
+# Mnemonic Maps
+#
+mmap new  -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new  -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+#
+# Waveform windows
+#
+if {[catch {window new WaveWindow -name "Waveform 1" -geometry 1920x1003+0+24}] != ""} {
+    window geometry "Waveform 1" 1920x1003+0+24
+}
+window target "Waveform 1" on
+waveform using {Waveform 1}
+waveform sidebar select designbrowser
+waveform set \
+    -primarycursor TimeA \
+    -signalnames name \
+    -signalwidth 175 \
+    -units ns \
+    -valuewidth 75
+waveform baseline set -time 0
+
+
+set groupId0 [waveform add -groups PE0_0]
+
+
+set groupId0 [waveform add -groups PE0_1]
+
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.result_1[15:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {PE_array_tb.dut.row[0].col[1].pe_inst.result_2[15:0]}]}
+	} ]]
+
+set groupId0 [waveform add -groups PE0_2]
+
+
+waveform xview limits 0 2960ns
+
+#
+# Waveform Window Links
+#
+
+#
+# Layout selection
+#
+

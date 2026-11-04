@@ -1,0 +1,273 @@
+
+#
+# Preferences
+#
+preferences set toolbar-Standard-WatchWindow {
+  usual
+  shown 0
+}
+preferences set plugin-enable-svdatabrowser-new 1
+preferences set toolbar-Windows-WatchWindow {
+  usual
+  shown 0
+}
+preferences set plugin-enable-groupscope 0
+preferences set sb-display-values 1
+preferences set plugin-enable-interleaveandcompare 0
+preferences set plugin-enable-waveformfrequencyplot 0
+preferences set toolbar-SimControl-WatchWindow {
+  usual
+  shown 0
+}
+preferences set toolbar-TimeSearch-WatchWindow {
+  usual
+  shown 0
+}
+
+#
+# Databases
+#
+database require waves -search {
+	./waves.shm/waves.trn
+	/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1/test_buffer_array/waves.shm/waves.trn
+}
+#
+# Groups
+#
+catch {group new -name test_1 -overlay 0}
+catch {group new -name {PE control} -overlay 0}
+group using test_1
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+
+group insert \
+    waves::tb_buffer_array.dut.data_out_0[15:0] \
+    waves::tb_buffer_array.dut.data_out_1[15:0] \
+    waves::tb_buffer_array.dut.data_out_2[15:0] \
+    waves::tb_buffer_array.dut.data_out_3[15:0] \
+    waves::tb_buffer_array.dut.data_out_4[15:0] \
+    waves::tb_buffer_array.dut.read_en[15:0] \
+    waves::tb_buffer_array.dut.read_addr_0[11:0] \
+    waves::tb_buffer_array.dut.read_addr_1[11:0] \
+    waves::tb_buffer_array.dut.read_addr_2[11:0] \
+    waves::tb_buffer_array.dut.clk \
+    waves::tb_buffer_array.dut.cnt_row_ofm_image[11:0] \
+    waves::tb_buffer_array.dut.exe_1row_done \
+    waves::tb_buffer_array.dut.exe_1row_done_pl \
+    waves::tb_buffer_array.dut.exe_1row_done_dly1 \
+    waves::tb_buffer_array.dut.cnt_ifm_load[11:0] \
+    waves::tb_buffer_array.dut.axi_read_fire \
+    waves::tb_buffer_array.dut.cnt_ifm_load[11:0] \
+    waves::tb_buffer_array.dut.rlast_cond \
+    waves::tb_buffer_array.dut.clk \
+    waves::tb_buffer_array.dut.cnt_ifm[11:0] \
+    waves::tb_buffer_array.dut.req_ifm_row[11:0] \
+    waves::tb_buffer_array.dut.cnt_channel_read[11:0] \
+    waves::tb_buffer_array.dut.wr_addr_buffer[11:0] \
+    waves::tb_buffer_array.dut.wr_base_addr[11:0] \
+    waves::tb_buffer_array.dut.req_buffer_row[11:0]
+group using {PE control}
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+
+group insert \
+    waves::tb_buffer_array.dut.reset_pe_2[15:0] \
+    waves::tb_buffer_array.dut.reset_pe_1[15:0] \
+    waves::tb_buffer_array.dut.sel_out_de_mux \
+    waves::tb_buffer_array.dut.sel_out_mux \
+    waves::tb_buffer_array.dut.write_out_en \
+    waves::tb_buffer_array.dut.write_out_en \
+    waves::tb_buffer_array.dut.cnt_compute[11:0] \
+    waves::tb_buffer_array.dut.c_state[2:0] \
+    waves::tb_buffer_array.dut.cnt_compute_max[11:0] \
+    waves::tb_buffer_array.dut.clk \
+    waves::tb_buffer_array.dut.compute_en
+
+#
+# Mnemonic Maps
+#
+mmap new  -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new  -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+#
+# Waveform windows
+#
+if {[catch {window new WaveWindow -name "Waveform 1" -geometry 1920x1003+0+24}] != ""} {
+    window geometry "Waveform 1" 1920x1003+0+24
+}
+window target "Waveform 1" on
+waveform using {Waveform 1}
+waveform sidebar select designbrowser
+waveform set \
+    -primarycursor TimeA \
+    -signalnames name \
+    -signalwidth 222 \
+    -units ns \
+    -valuewidth 75
+waveform baseline set -time 0
+
+
+set groupId0 [waveform add -groups test_1]
+set gpGlist0 [waveform hierarchy contents $groupId0]
+set gpID0 [lindex $gpGlist0 0]
+foreach {name attrs}  {
+    {waves::tb_buffer_array.dut.data_out_0[15:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.data_out_1[15:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.data_out_2[15:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.data_out_3[15:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.data_out_4[15:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.read_en[15:0]} {}
+    {waves::tb_buffer_array.dut.read_addr_0[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.read_addr_1[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.read_addr_2[11:0]} {-radix %d}
+    waves::tb_buffer_array.dut.clk {}
+    {waves::tb_buffer_array.dut.cnt_row_ofm_image[11:0]} {}
+    waves::tb_buffer_array.dut.exe_1row_done {}
+    waves::tb_buffer_array.dut.exe_1row_done_pl {}
+    waves::tb_buffer_array.dut.exe_1row_done_dly1 {}
+    {waves::tb_buffer_array.dut.cnt_ifm_load[11:0]} {-radix %d}
+    waves::tb_buffer_array.dut.axi_read_fire {}
+    {waves::tb_buffer_array.dut.cnt_ifm_load[11:0]} {-radix %d}
+    waves::tb_buffer_array.dut.rlast_cond {}
+    waves::tb_buffer_array.dut.clk {}
+    {waves::tb_buffer_array.dut.cnt_ifm[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.req_ifm_row[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.cnt_channel_read[11:0]} {}
+    {waves::tb_buffer_array.dut.wr_addr_buffer[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.wr_base_addr[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.req_buffer_row[11:0]} {}
+} childcmds {
+    {}
+    {}
+    {}
+    {}
+    {}
+    {
+        set id $gpID0
+        waveform hierarchy collapse $id
+    }
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+} {
+    set expected [ join [waveform signals -format fullpath $gpID0] ]
+    if {[string equal $name $expected] || $name == "cdivider"} {
+        if {$attrs != ""} {
+            eval waveform format $gpID0 $attrs
+        }
+        if { $childcmds != ""} {
+            eval $childcmds
+        }
+    }
+    set gpGlist0 [lrange $gpGlist0 1 end]
+    set gpID0 [lindex $gpGlist0 0]
+}
+waveform hierarchy collapse $groupId0
+
+
+set groupId0 [waveform add -groups {{PE control}}]
+set gpGlist0 [waveform hierarchy contents $groupId0]
+set gpID0 [lindex $gpGlist0 0]
+foreach {name attrs}  {
+    {waves::tb_buffer_array.dut.reset_pe_2[15:0]} {}
+    {waves::tb_buffer_array.dut.reset_pe_1[15:0]} {}
+    waves::tb_buffer_array.dut.sel_out_de_mux {}
+    waves::tb_buffer_array.dut.sel_out_mux {}
+    waves::tb_buffer_array.dut.write_out_en {}
+    waves::tb_buffer_array.dut.write_out_en {}
+    {waves::tb_buffer_array.dut.cnt_compute[11:0]} {-radix %d}
+    {waves::tb_buffer_array.dut.c_state[2:0]} {}
+    {waves::tb_buffer_array.dut.cnt_compute_max[11:0]} {-radix %d}
+    waves::tb_buffer_array.dut.clk {}
+    waves::tb_buffer_array.dut.compute_en {}
+} childcmds {
+    {
+        set id $gpID0
+        waveform hierarchy collapse $id
+    }
+    {
+        set id $gpID0
+        waveform hierarchy collapse $id
+    }
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+    {}
+} {
+    set expected [ join [waveform signals -format fullpath $gpID0] ]
+    if {[string equal $name $expected] || $name == "cdivider"} {
+        if {$attrs != ""} {
+            eval waveform format $gpID0 $attrs
+        }
+        if { $childcmds != ""} {
+            eval $childcmds
+        }
+    }
+    set gpGlist0 [lrange $gpGlist0 1 end]
+    set gpID0 [lindex $gpGlist0 0]
+}
+waveform hierarchy collapse $groupId0
+
+
+waveform xview limits 0 100000ns
+
+#
+# Waveform Window Links
+#
+
+#
+# Source Browser windows
+#
+if {[catch {window new SrcBrowser -name "Source Browser 2" -geometry 700x525+0+53}] != ""} {
+    window geometry "Source Browser 2" 700x525+0+53
+}
+window target "Source Browser 2" on
+srcbrowser using {Source Browser 2}
+srcbrowser set \
+    -primarycursor TimeA \
+    -units ns \
+    -radix default \
+    -showstrength 0 \
+    -showcallstack 0 \
+    -displayvalues 1
+
+srcbrowser show -scope tb_buffer_array -file /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1/test_buffer_array/tb.sv -line 3
+
+srcbrowser sidebar visibility partial
+
+#
+# Console windows
+#
+console set -windowname Console
+window geometry Console 600x250+0+0
+
+#
+# Layout selection
+#

@@ -1,0 +1,8 @@
+0.7
+2020.2
+May 22 2024
+18:54:44
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv,1785851239,systemVerilog,,,,tb,,,,,,,,
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE.v,1786548957,systemVerilog,,/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/swapper.v,,PE,,,,,,,,
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE_array.v,1786548631,systemVerilog,,/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE.v,,PE_array,,,,,,,,
+,,,,/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sim_1/new/tb_PE.sv,,swapper,,,,,,,,

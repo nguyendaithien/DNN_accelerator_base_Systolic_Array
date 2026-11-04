@@ -1,0 +1,24 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
+-XLMODE
+./xcelium.d/run.lnx8664.24.09.d
+-RUNMODE
+-sv
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE.v
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/RAM.sv
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/PE_array.v
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/tb_PE_array.sv
+/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/DPRAM.v
+-LINEDEBUG
+-CDSLIB
+./xcelium.d/run.lnx8664.24.09.d/cdsrun.lib
+-HDLVAR
+./xcelium.d/run.lnx8664.24.09.d/hdlrun.var
+-no_analogsolver
+-MESSAGES
+-UPDATE
+-XLLIBSTORE
+./xcelium.d/run.lnx8664.24.09.d/xllibs
+-ALLOWUNBOUND

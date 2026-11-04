@@ -1,0 +1,131 @@
+*** Message Type: info ***
+When: Tue Aug 18 12:28:26 AM +07 2026
+SimVision started.
+Version: TOOL:  simvision(64)   24.09-s013
+User: luu_k64
+Host: edabk.tail0d59f2.ts.net
+Platform: Linux/x86_64/3.10.0-1160.119.1.el7.x86_64
+Started: Tue Aug 18 12:28:26 AM +07 2026
+Command: /Cadence/XCELIUM2409/tools.lnx86/simvision/bin/64bit/simvision.exe
+Work Directory: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:28:26 AM +07 2026
+Create waveform window: "Waveform 1"
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:28:28 AM +07 2026
+Create console window: "Console"
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:28:28 AM +07 2026
+Create utility window: "Properties"
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:33:01 AM +07 2026
+Create source window: "Source Browser 1"
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:33:02 AM +07 2026
+Connect to Simulator
+      Design: worklib.PE_array_tb:sv
+   Languages: verilog
+   Simulator: Xcelium ppe
+     Version: TOOL:        ippe(64)        24.09-s013
+        User: luu_k64
+        Host: edabk.tail0d59f2.ts.net
+Time Started: Tue Aug 18 12:33:01 AM +07 2026
+  Process ID: 30151
+   Directory: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new
+     Command: /Cadence/XCELIUM2409/tools.lnx86/simvision/bin/64bit/ippe.exe -nocopyright -nowarn DLNOCL -cdslib /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/./xcelium.d/run.lnx8664.24.09.d/cds.lib -snapshot worklib.PE_array_tb:sv -64
+
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:33:02 AM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:37:10 AM +07 2026
+Delete source window: "Source Browser 1"
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:37:15 AM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 12:39:34 AM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:41:14 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:47:22 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:50:58 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:53:12 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:55:27 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 09:55:59 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 10:03:15 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 10:23:24 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 10:40:06 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 10:48:21 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: info ***
+When: Tue Aug 18 10:55:51 PM +07 2026
+Exit Simulator: user
+ 
+*** Message Type: error ***
+When: Wed Aug 19 09:04:09 PM +07 2026
+Xcelium ppe Crashed:
+      Design: worklib.PE_array_tb:sv
+   Languages: verilog
+   Simulator: Xcelium ppe
+     Version: TOOL:        ippe(64)        24.09-s013
+        User: luu_k64
+        Host: edabk.tail0d59f2.ts.net
+Time Started: Tue Aug 18 10:55:51 PM +07 2026
+  Process ID: 2844
+   Directory: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new
+     Command: /Cadence/XCELIUM2409/tools.lnx86/simvision/bin/64bit/ippe.exe -nocopyright -nowarn DLNOCL -cdslib /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/./xcelium.d/run.lnx8664.24.09.d/cds.lib -snapshot worklib.PE_array_tb:sv -64
+      Design: worklib.PE_array_tb:sv
+   Languages: verilog
+   Simulator: Xcelium ppe
+     Version: TOOL: ippe(64)        24.09-s013
+        User: luu_k64
+        Host: edabk.tail0d59f2.ts.net
+Time Started: Tue Aug 18 10:55:51 PM +07 2026
+  Process ID: 2844
+   Directory: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new
+     Command: /Cadence/XCELIUM2409/tools.lnx86/simvision/bin/64bit/ippe.exe -nocopyright -nowarn DLNOCL -cdslib /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new/./xcelium.d/run.lnx8664.24.09.d/cds.lib -snapshot worklib.PE_array_tb:sv -64
+
+ 
+*** Message Type: info ***
+When: Wed Aug 19 11:13:46 PM +07 2026
+SimVision Exit.
+ 

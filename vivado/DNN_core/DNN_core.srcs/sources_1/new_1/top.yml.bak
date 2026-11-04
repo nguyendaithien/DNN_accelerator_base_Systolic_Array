@@ -1,0 +1,21 @@
+---
+instance:
+#=============================
+- name: axi_master_i1
+  mname: axi_master
+  mpath: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1/AXI_master.sv
+  parameters:
+    -
+  ports:
+  - ACLK: clk
+  - ARESETN: rst_n
+
+// Local Variables:
+// verilog-library-directories: ("/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1")
+// End:
+// End:
+
+// Local Variables:
+// verilog-library-directories: ("/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1")
+// verilog-auto-inst-param-value:t
+// End:

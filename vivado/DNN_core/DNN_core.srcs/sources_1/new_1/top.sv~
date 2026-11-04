@@ -1,0 +1,19 @@
+module top();
+// Qonnex
+	/*AUTOWIRE*/
+	/*AUTOREG*/
+  /*
+   AXI_master AUTO_TEMPLATE (
+   .ACLK(clk),
+   .ARESETN(rst_n),
+   );
+   */
+  AXI_master 
+  axi_master_i1(/*AUTOINST*/);
+
+endmodule
+
+// Local Variables:
+// verilog-library-directories: ("/home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1")
+// verilog-auto-inst-param-value:t
+// End:

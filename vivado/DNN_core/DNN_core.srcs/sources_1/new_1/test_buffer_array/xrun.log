@@ -1,0 +1,62 @@
+xrun(64): 24.09-s013: (c) Copyright 1995-2025 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	24.09-s013: Started on Nov 01, 2026 at 23:57:30 +07
+xrun
+	-access +rwc
+	-sv
+	-linedebug
+	-input run.tcl
+	buffer_array.sv
+	RAM_2ports.sv
+	tb.sv
+xrun: *W,BADPRF: The -linedebug option may have an adverse performance impact.
+Recompiling... reason: file './buffer_array.sv' is newer than expected.
+	expected: Sun Nov  1 15:18:29 2026
+	actual:   Sun Nov  1 23:57:27 2026
+file: buffer_array.sv
+	module worklib.buffer_array:sv
+		errors: 0, warnings: 0
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Top level design units:
+		tb_buffer_array
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.tb_buffer_array:sv <0x7922cbe8>
+			streams:  58, words: 115665
+		worklib.buffer_array:sv <0x0e5fcfd7>
+			streams: 118, words: 44620
+	Building instance specific data structures.
+	Loading native compiled code:     .................... Done
+	Design hierarchy summary:
+		                 Instances  Unique
+		Modules:                18       3
+		Registers:             126      96
+		Scalar wires:           37       -
+		Expanded wires:         16       1
+		Vectored wires:         88       -
+		Always blocks:          27      12
+		Initial blocks:          6       6
+		Cont. assignments:      19      22
+		Pseudo assignments:     70       -
+		Simulation timescale:  1ps
+	Writing initial simulation snapshot: worklib.tb_buffer_array:sv
+Loading snapshot worklib.tb_buffer_array:sv .................... Done
+SVSEED default: 1
+xcelium> source /Cadence/XCELIUM2409/tools/xcelium/files/xmsimrc
+xcelium> database -open waves -shm
+Created SHM database waves
+xcelium> probe -create -all -depth all -database waves
+Created probe 1
+xcelium> run
+Generated random data:
+    2     6     2     9     9     9     2    10     1     7     7     2     6     9     4     3     5     8    10     2     6     1     2     1     7     3     5     3     1     2     1     8 
+    1     2     4     9     1     5     9     6     8     8     7     5     7     9     4     5     6     5     3     3     2     3     3     5     9     7     9     2     1     5     4     7 
+    7     6     8     4    10     4     2     5     3     3     1     2     3     2     9     5     1     7     6     7     3     1     9     5     7     1     7    10    10     6     8     7 
+    8     4     8    10     9     4    10     9     9     9     4     9    10     7     2     2     3     3     5     5     3     1     1    10     5     6     7    10     4     6     7     4 
+    4     9    10     7     5     6     2     7     6     3     6     1     9     5     9     4    10     2     6     6     3     8     7     9     8     1     9     8     9     2     7     3 
+================ READ OPERATION ====================
+ CNT channel READ = 2 :                19000
+Simulation complete via $finish(1) at time 100 US + 0
+./tb.sv:397 			$finish;
+xcelium> exit
+TOOL:	xrun(64)	24.09-s013: Exiting on Nov 01, 2026 at 23:58:34 +07  (total: 00:01:04)
