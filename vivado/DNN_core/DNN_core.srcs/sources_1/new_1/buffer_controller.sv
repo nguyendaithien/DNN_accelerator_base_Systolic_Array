@@ -32,18 +32,36 @@ module buffer_controller #(
 
 	// to AXI master 
 	output ifm_req_valid,
-	output [11:0] rd_ifm_addr,	
 
 	// to Buffer_array
-	output logic [11:0] wr_ifm_addr_buffer,
-	output wr_en_buffer,
+	output logic [11:0] wr_ifm_addr,
+	output logic [11:0] rd_ifm_addr,	
+	output logic wr_en_buffer,
+	output logic rd_en_buffer,
+	// IFM buffer read address
+
+	output logic [11:0] ifm_buffer_address_0, 
+	output logic [11:0] ifm_buffer_address_1, 
+	output logic [11:0] ifm_buffer_address_2, 
+	output logic [11:0] ifm_buffer_address_3, 
+	output logic [11:0] ifm_buffer_address_4, 
+	output logic [11:0] ifm_buffer_address_5, 
+	output logic [11:0] ifm_buffer_address_6, 
+	output logic [11:0] ifm_buffer_address_7, 
+	output logic [11:0] ifm_buffer_address_8, 
+	output logic [11:0] ifm_buffer_address_9, 
+	output logic [11:0] ifm_buffer_address_10, 
+	output logic [11:0] ifm_buffer_address_11, 
+	output logic [11:0] ifm_buffer_address_12, 
+	output logic [11:0] ifm_buffer_address_13, 
+	output logic [11:0] ifm_buffer_address_14, 
+	output logic [11:0] ifm_buffer_address_15, 
 
 	// To PE array or PE array controller
 	output wire compute_en
 		
 );
 
-	assign wr_ifm_addr_buffer = wr_addr_buffer;
 	logic [11:0] ofm_col_size; // width of OFM with differental stride
 	logic [11:0] ofm_row_size_buffer; // height of OFM with differental stride
 	logic [11:0] ifm_buffer_address;
@@ -151,31 +169,6 @@ module buffer_controller #(
 			cnt_ofm_buffer_col <=cnt_ofm_buffer_col + '1;
 	end
 
-	// cnt row ofm
-//	wire cnt_row_ofm_clr; 
-//	wire cnt_row_ofm_en; 
-//	assign cnt_row_ofm_clr =  cnt_row_ofm_match && 
-//														cnt_ofm_col_match && 
-//														cnt_kernel_match && 
-//														cnt_row_match && 
-//														cnt_pixel_match;
-	// TODO: add additional condition that sure SA has been done the workloads for one row ofm
-//	assign cnt_row_ofm_en  = cnt_tile_buffer_match && 
-//													 cnt_kernel_match && 
-//													 cnt_row_match && 
-//													 cnt_pixel_match;
-
-	//============ COUNTER ROW OF OFM ==============//
-//	reg [11:0] cnt_row_ofm;
-//	always @(posedge clk or negedge rst_n) begin
-//		if(!rst_n)
-//			cnt_row_ofm <= '0; // cnt_row_ofm means is that cnt_ofm_buffer
-//		else if(cnt_row_ofm_clr)
-//			cnt_row_ofm <= '0;
-//		else if(cnt_row_ofm_en)
-//			cnt_row_ofm <= cnt_row_ofm + '1;
-//	end
-
 	wire cnt_row_ofm_buffer_clr; 
 	wire cnt_row_ofm_buffer_en; 
 
@@ -184,21 +177,12 @@ module buffer_controller #(
 														cnt_kernel_match && 
 														cnt_row_match && 
 														cnt_pixel_match;
-//buffer_
+
 	assign cnt_row_ofm_buffer_en  = cnt_ofm_col_buffer_match && 
 													 cnt_kernel_match && 
 													 cnt_row_match && 
 													 cnt_pixel_match;
 
-	//============ COUNTER ROW OF OFM in BUFFER==============//
-//	always @(posedge clk or negedge rst_n) begin
-//		if(!rst_n)
-//			cnt_row_ofm_buffer <= '0; // cnt_row_ofm means is that cnt_ofm_buffer
-//		else if(cnt_row_ofm_buffer_clr)
-//			cnt_row_ofm_buffer <= '0;
-//		else if(cnt_row_ofm_buffer_en)
-//			cnt_row_ofm_buffer <= cnt_row_ofm_buffer + '1;
-//	end
 
 	//============ COUNTER TILE OF OFM ROW ==============//
 	assign cnt_tile_ifm_row_clr = cnt_tile_ifm_row_match &&
@@ -224,7 +208,7 @@ module buffer_controller #(
 	// =================================================================
 	// ===================== sliding window address ====================
 	// ================================================================= 
-	wire [5:0] cnt_row_real;
+	wire [11:0] cnt_row_real;
 //	assign cnt_row_real = ((cnt_row + cnt_row_ofm*stride) >= ifm_height_tile*cnt_tile_ifm_row) ? (cnt_row + cnt_row_ofm - ifm_height_tile*cnt_tile_ifm_row) : (cnt_row + cnt_ofm_row*stride); 
 	assign cnt_row_real = ((cnt_row + cnt_row_ofm_image*stride) % ifm_height_tile); 
 	
@@ -270,16 +254,6 @@ module buffer_controller #(
 
 	reg [11:0] cnt_ifm_reload;
 	wire [11:0] cnt_ifm_reload_nxt;
-
-//	reg [11:0] cnt_row_ifm;
-//	assign cnt_ifm_reload_nxt = ((cnt_ifm_reload_nxt < cnt_ofm_row) && (cnt_ifm_reload_nxt > cnt_row_ofm) ) ? (cnt_ofm_row - 1) : cnt_ifm_reload_nxt;
-//
-//	always @(posedge clk or negedge rst_n) begin
-//		if(!rst_n) 
-//	 		cnt_row_ifm <= '0;
-//	 	else 
-//			cnt_row_ifm <= cnt_ifm_reload_nxt;	
-//	end
 
 
 // ======================= COMPUTE ENABLE AND LOAD ENABLE ==================================//
@@ -331,7 +305,14 @@ module buffer_controller #(
 		else
 			ifm_req_valid <= ifm_req_valid_nxt;
 	end
-  
+ // ===================== READ EN BUFFER ============================ 
+	reg [15:0] rd_en_buffer;
+	always @(negedge clk or negedge rst_n) begin
+		if(!rst_n)
+			rd_en_buffer <= 16'd0;
+		else
+			rd_en_buffer <= (rd_en_buffer << 1) | {15'b0,compute_en};
+	end
 	// ==================== WRITE BUFFER OPERATION: write_address, wr_en=====================================
 	// cnt_ifm_load 
 	wire axi_read_fire, rlast_cond;
@@ -375,18 +356,19 @@ module buffer_controller #(
 	wire [11:0] req_buffer_row;
 	assign req_ifm_row     = cnt_ifm_load + 1'b1;
 	assign req_buffer_row  = req_ifm_row % ifm_height_tile;
-	// wr_addr_buffer
+
+	// ================ WRITE ADDRESS BUFFER ======================
 	wire [11:0] wr_addr_buffer_nxt;
 	wire [11:0] wr_base_addr;
-	reg [11:0] wr_addr_buffer;
+	reg [11:0] wr_ifm_addr;
 	assign wr_addr_buffer_nxt = wr_base_addr + cnt_ifm;
 	assign wr_base_addr = req_buffer_row * ifm_width_tile +
 			   ifm_width_tile*ifm_height_tile*cnt_channel_read;
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n) 
-			wr_addr_buffer <= '0;
+			wr_ifm_addr <= '0;
 		else
-			wr_addr_buffer <= wr_addr_buffer_nxt;
+			wr_ifm_addr <= wr_addr_buffer_nxt;
 	end
 	// cnt channel read
 	reg [11:0] cnt_channel_read;

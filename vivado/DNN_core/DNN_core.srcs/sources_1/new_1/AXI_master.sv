@@ -38,7 +38,9 @@ module AXI_master #(
     // =========================================================
     output logic [DATA_WIDTH-1:0]  ifm_data,
     output logic                   ifm_data_valid,
-    output logic                   ifm_data_last,
+    output logic                   wgt_data_valid,
+    output logic                   ifm_data_valid,
+    output logic                   ofm_data_last,
 
     // =========================================================
     // AXI4 Write Address Channel (AW)

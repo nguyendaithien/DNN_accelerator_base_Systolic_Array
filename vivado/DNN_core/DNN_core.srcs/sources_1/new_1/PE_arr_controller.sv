@@ -1,5 +1,5 @@
 
-module pe_arr_controller #(
+module PE_arr_controller #(
     parameter DATA_WIDTH = 16,
     parameter SA_SIZE = 16
 )(
@@ -64,7 +64,7 @@ module pe_arr_controller #(
 					reset_pe_1 <= (sel_out_mux) ? 16'h0 : 16'hFFFF;
 					reset_pe_2 <= (sel_out_mux) ? 16'hFFFF : 16'h0;
 					enable <= 1;
-					sel_out_de_mux <= !sel_out_de_mux;   // select reg 1 
+					sel_out_de_mux <= !sel_out_de_mux;   
 					exe_ready <= 1;
       		sel_out_mux    <= !sel_out_mux;
 					exe_1row_done <= 1;
