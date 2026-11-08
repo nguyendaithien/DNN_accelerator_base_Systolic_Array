@@ -10,8 +10,8 @@ module PE_arr_controller #(
 
 	output logic exe_1row_done,
 	output logic exe_ready,
-	output logic [15:0] reset_pe_1,
-	output logic [15:0] reset_pe_2,
+	output logic [2*SA_SIZE-2:0] reset_pe_1,
+	output logic [2*SA_SIZE-2:0] reset_pe_2,
 	output logic enable,
 	output logic write_out_en,
 	output logic sel_out_mux,
@@ -61,8 +61,8 @@ module PE_arr_controller #(
 				SET_UP: begin
 					exe_1row_done <= 0;
 					exe_ready <= 0;
-					reset_pe_1 <= (sel_out_mux) ? 16'h0 : 16'hFFFF;
-					reset_pe_2 <= (sel_out_mux) ? 16'hFFFF : 16'h0;
+					reset_pe_1 <= (sel_out_mux) ? 31'h0 : 31'h7FFF_FFFF;
+					reset_pe_2 <= (sel_out_mux) ? 31'h7FFF_FFFF : 31'h0;
 					enable <= 1;
 					sel_out_de_mux <= !sel_out_de_mux;   
 					exe_ready <= 1;

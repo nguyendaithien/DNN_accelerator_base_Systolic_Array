@@ -1,6 +1,6 @@
 module RAM_2ports #(
     parameter int DATA_WIDTH = 16,
-    parameter int DEPTH      = 432
+    parameter int DEPTH      = 5000
 )(
      input  logic                  clk       
     ,input  logic                  rst

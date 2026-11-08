@@ -229,7 +229,8 @@ module buffer_controller #(
 	wire [11:0] prefetch_require;
 	wire ifm_req_valid_nxt;
 	assign prefetch_require = (cnt_ifm_load - cnt_row_ofm_image);
-	assign ifm_req_valid_nxt    = ifm_req_valid ? rlast_cond : (prefetch_require < ifm_height_tile); // ifm_height_tile is buffer size
+	wire req_cond =  (prefetch_require < ifm_height_tile);
+	assign ifm_req_valid_nxt    = ifm_req_valid ? (!rlast_cond) : req_cond; // ifm_height_tile is buffer size
 
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)

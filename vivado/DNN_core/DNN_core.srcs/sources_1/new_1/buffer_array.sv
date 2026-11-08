@@ -1,8 +1,9 @@
 
 `timescale 1ns / 1ps
 module buffer_array #(
-    parameter int DATA_WIDTH = 16,
-    parameter int DEPTH      = 432
+    parameter DATA_WIDTH = 16,
+		parameter SYSTOLIC_SIZE = 16,
+    parameter DEPTH      = 5000
 )(
     input  logic                  clk,
     input  logic                  rst_n,
@@ -45,9 +46,11 @@ module buffer_array #(
     output logic [DATA_WIDTH-1:0] data_out_12,
     output logic [DATA_WIDTH-1:0] data_out_13,
     output logic [DATA_WIDTH-1:0] data_out_14,
-    output logic [DATA_WIDTH-1:0] data_out_15
+    output logic [DATA_WIDTH-1:0] data_out_15,
+    output logic [SYSTOLIC_SIZE*DATA_WIDTH-1:0] ifm_in
 );
 
+	assign ifm_in = {data_out_0,data_out_1,data_out_2,data_out_3,data_out_4,data_out_5,data_out_6,data_out_7,data_out_8,data_out_9,data_out_10,data_out_11,data_out_12,data_out_13,data_out_14,data_out_15} ;             
 	    RAM_2ports #(
         .DATA_WIDTH(DATA_WIDTH),
         .DEPTH(DEPTH)

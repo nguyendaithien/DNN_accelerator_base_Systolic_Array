@@ -71,6 +71,7 @@ module AXI_master #(
 	localparam [2:0] READ_IDLE = 3'b000;
 	localparam [2:0] READ_ADDR = 3'b001;
 	localparam [2:0] READ_DATA = 3'b010;
+	localparam [7:0] ARLEN = 8'd128;
 	reg ifm_data_last;
 	
 	reg [2:0] read_state;
@@ -84,6 +85,7 @@ module AXI_master #(
 	        ifm_data        <= '0;
 	        ifm_data_valid  <= 1'b0;
 	        ifm_data_last   <= 1'b0;
+					M_AXI_ARLEN     <= ARLEN;
 	    end else begin
 	        ifm_data_valid <= 1'b0;
 	        ifm_data_last  <= 1'b0;
