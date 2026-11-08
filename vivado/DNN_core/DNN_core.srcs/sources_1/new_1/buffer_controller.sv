@@ -35,7 +35,7 @@ module buffer_controller #(
 
 	// to Buffer_array
 	output logic [11:0] wr_ifm_addr,
-	output logic [11:0] rd_ifm_addr,	
+	output logic [31:0] rd_ifm_addr,	
 	output logic wr_en_buffer,
 	output logic [15:0] rd_en_buffer,
 	// IFM buffer read address
@@ -286,7 +286,7 @@ module buffer_controller #(
 	wire [11:0] req_ifm_row;
 	wire [11:0] req_buffer_row;
 	assign req_ifm_row     = cnt_ifm_load + 1'b1;
-	assign req_buffer_row  = req_ifm_row % ifm_height_tile;
+	assign req_buffer_row  = cnt_ifm_load % ifm_height_tile;
 
 	// cnt channel read
 	assign get_max_channel = (cnt_channel_read == ifm_channel - 1);
@@ -336,9 +336,12 @@ module buffer_controller #(
 			cnt_tile_col <= cnt_tile_col + 1;
 	end
 	// read address: to AXI master
-	wire [11:0] rd_ifm_addr_nxt; 
-	assign rd_ifm_addr_nxt = req_ifm_row * ifm_width + cnt_channel_read*ifm_width*ifm_height
+	wire [31:0] rd_ifm_addr_nxt_1, rd_ifm_addr_nxt_2; 
+	wire [31:0] rd_ifm_addr_nxt; 
+	assign rd_ifm_addr_nxt_1 = (req_ifm_row-1) * ifm_width + cnt_channel_read*ifm_width*ifm_height; 
+	assign rd_ifm_addr_nxt_2 = (req_ifm_row-1) * ifm_width + cnt_channel_read*ifm_width*ifm_height
 											 + cnt_tile_col * ifm_width_tile - kernel_size + 1; 
+	assign rd_ifm_addr_nxt = (cnt_tile_col >= 1) ? rd_ifm_addr_nxt_2 : rd_ifm_addr_nxt_1;
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)
  			rd_ifm_addr <= '0;

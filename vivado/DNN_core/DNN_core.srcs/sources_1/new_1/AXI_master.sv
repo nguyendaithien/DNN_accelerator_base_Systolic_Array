@@ -12,12 +12,12 @@ module AXI_master #(
     // Buffer Controller interface
     // =========================================================
     input  logic                   ifm_req_valid,
-    input  logic [11:0]            rd_ifm_addr,
+    input  logic [31:0]            rd_ifm_addr,
 
     // =========================================================
     // AXI4 Read Address Channel (AR)
     // =========================================================
-    output logic [ADDR_WIDTH-1:0]  M_AXI_ARADDR,
+    output logic [31:0]  M_AXI_ARADDR,
     output logic [7:0]             M_AXI_ARLEN,
     output logic [2:0]             M_AXI_ARSIZE,
     output logic [1:0]             M_AXI_ARBURST,
@@ -71,7 +71,9 @@ module AXI_master #(
 	localparam [2:0] READ_IDLE = 3'b000;
 	localparam [2:0] READ_ADDR = 3'b001;
 	localparam [2:0] READ_DATA = 3'b010;
-	localparam [7:0] ARLEN = 8'd128;
+	localparam [7:0] ARLEN = 8'h7F;
+	localparam [2:0] ARSIZE = 3'b001;
+	localparam [1:0] ARBURST = 2'b01;
 	reg ifm_data_last;
 	
 	reg [2:0] read_state;
@@ -86,6 +88,8 @@ module AXI_master #(
 	        ifm_data_valid  <= 1'b0;
 	        ifm_data_last   <= 1'b0;
 					M_AXI_ARLEN     <= ARLEN;
+					M_AXI_ARSIZE     <= ARSIZE;
+          M_AXI_ARBURST    <= ARBURST;
 	    end else begin
 	        ifm_data_valid <= 1'b0;
 	        ifm_data_last  <= 1'b0;
