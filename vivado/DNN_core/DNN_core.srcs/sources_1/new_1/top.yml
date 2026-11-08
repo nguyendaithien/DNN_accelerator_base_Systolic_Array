@@ -3,9 +3,101 @@ instance:
 #=============================
 - name: axi_master_i1
   mname: AXI_master
-  mpath: /home/luu_k64/Vivado/DNN_core/DNN_core.srcs/sources_1/new_1/AXI_master.sv
+  mpath: /home/luu_k64/project/DNN_accelerator_base_Systolic_Array/vivado/DNN_core/DNN_core.srcs/sources_1/new_1/AXI_master.sv
   parameters:
     -
   ports:
   - ACLK: clk
   - ARESETN: rst_n
+  - M_AXI_ARADDR   : M_AXI_ARADDR 
+  - M_AXI_ARLEN    : M_AXI_ARLEN  
+  - M_AXI_ARSIZE   : M_AXI_ARSIZE 
+  - M_AXI_ARBURST  : M_AXI_ARBURST
+  - M_AXI_ARVALID  : M_AXI_ARVALID
+  - M_AXI_RREADY   : M_AXI_RREADY 
+  - M_AXI_AWADDR   : M_AXI_AWADDR 
+  - M_AXI_AWLEN    : M_AXI_AWLEN  
+  - M_AXI_AWSIZE   : M_AXI_AWSIZE 
+  - M_AXI_AWBURST  : M_AXI_AWBURST
+  - M_AXI_AWVALID  : M_AXI_AWVALID
+  - M_AXI_WDATA    : M_AXI_WDATA  
+  - M_AXI_WSTRB    : M_AXI_WSTRB  
+  - M_AXI_WLAST    : M_AXI_WLAST  
+  - M_AXI_WVALID   : M_AXI_WVALID 
+  - M_AXI_BREADY   : M_AXI_BREADY 
+#=============================
+- name: PE_arr_controller_i1
+  mname: PE_arr_controller
+  mpath: /home/luu_k64/project/DNN_accelerator_base_Systolic_Array/vivado/DNN_core/DNN_core.srcs/sources_1/new_1/PE_arr_controller.sv
+  parameters:
+    -
+  ports:
+  - cnt_compute_max: "12'h27"
+
+#=============================
+- name: PE_array_i1
+  mname: PE_array
+  mpath: /home/luu_k64/project/DNN_accelerator_base_Systolic_Array/vivado/DNN_core/DNN_core.srcs/sources_1/new_1/PE_array.sv
+  parameters:
+    -
+  ports:
+    - wgt_in: "'0"
+
+#=============================
+- name: buffer_controller_i1
+  mname: buffer_controller
+  mpath: /home/luu_k64/project/DNN_accelerator_base_Systolic_Array/vivado/DNN_core/DNN_core.srcs/sources_1/new_1/buffer_controller.sv
+  parameters:
+    -
+  ports:
+    - RVALID: M_AXI_RVALID
+    - RLAST: M_AXI_RLAST
+    - RREADY: M_AXI_RREADY
+    - RDATA: M_AXI_RDATA 
+    - ifm_channel: "12'd3"    
+    - kernel_size: "12'd3"    
+    - num_filter: "12'd16"     
+    - maxpool_stride: "12'd1" 
+    - stride: "12'd1"         
+    - ifm_width_tile: "12'd128"
+    - ifm_height_tile: "12'd9"
+    - ofm_width:   "12'd416"       
+    - ofm_height:  "12'd416"     
+    - ifm_width:   "12'd418"      
+    - ifm_height:  "12'd418"     
+    - num_channel: "12'd16"   
+
+
+
+
+
+
+#=============================
+- name: buffer_array_i1
+  mname: buffer_array
+  mpath: /home/luu_k64/project/DNN_accelerator_base_Systolic_Array/vivado/DNN_core/DNN_core.srcs/sources_1/new_1/buffer_array.sv
+  parameters:
+    -
+  ports:
+    - read_en: rd_en_buffer
+    - write_en: wr_en_buffer
+    - write_addr: wr_ifm_addr
+    - data_in: M_AXI_RDATA
+    - read_addr_0: ifm_buffer_address_0 
+    - read_addr_1: ifm_buffer_address_1 
+    - read_addr_2: ifm_buffer_address_2 
+    - read_addr_3: ifm_buffer_address_3 
+    - read_addr_4: ifm_buffer_address_4 
+    - read_addr_5: ifm_buffer_address_5 
+    - read_addr_6: ifm_buffer_address_6 
+    - read_addr_7: ifm_buffer_address_7 
+    - read_addr_8: ifm_buffer_address_8 
+    - read_addr_9: ifm_buffer_address_9 
+    - read_addr_10: ifm_buffer_address_10 
+    - read_addr_11: ifm_buffer_address_11 
+    - read_addr_12: ifm_buffer_address_12 
+    - read_addr_13: ifm_buffer_address_13 
+    - read_addr_14: ifm_buffer_address_14 
+    - read_addr_15: ifm_buffer_address_15 
+
+

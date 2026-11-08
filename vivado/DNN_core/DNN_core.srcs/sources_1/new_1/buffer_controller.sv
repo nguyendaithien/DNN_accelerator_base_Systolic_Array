@@ -5,11 +5,11 @@ module buffer_controller #(
 	input  logic        clk               ,
 	input  logic        rst_n             ,
 	
-	input  logic [10:0] ifm_channel       , // number of ifm channel
-	input  logic [3:0]  kernel_size       ,
-	input  logic [7:0]  num_filter        , // number of channel out
-	input  logic [1:0]  maxpool_stride    ,
-	input  logic [2:0]  stride            ,
+	input  logic [11:0] ifm_channel       , // number of ifm channel
+	input  logic [11:0]  kernel_size       ,
+	input  logic [11:0]  num_filter        , // number of channel out
+	input  logic [11:0]  maxpool_stride    ,
+	input  logic [11:0]  stride            ,
 	input  logic [11:0] ifm_width_tile    , // IFM width (not fixed)
 	input  logic [11:0] ifm_height_tile   , // IFM height (not fixed)
 	input  logic [11:0] ofm_width   ,
@@ -31,13 +31,13 @@ module buffer_controller #(
 	input logic ofm_data_valid,
 
 	// to AXI master 
-	output ifm_req_valid,
+	output logic ifm_req_valid,
 
 	// to Buffer_array
 	output logic [11:0] wr_ifm_addr,
 	output logic [11:0] rd_ifm_addr,	
 	output logic wr_en_buffer,
-	output logic rd_en_buffer,
+	output logic [15:0] rd_en_buffer,
 	// IFM buffer read address
 
 	output logic [11:0] ifm_buffer_address_0, 
@@ -80,12 +80,24 @@ module buffer_controller #(
 	reg [5:0  ] cnt_pixel         ;
 	reg [5:0  ] cnt_row           ; // cnt row of each kernel (Ex: kernel_size = 5 => cnt = 0,1,2,3,4)
 	reg	[11:0 ] cnt_kernel        ; // kernel number: 256, 512...
-	reg [11:0 ] cnt_ofm_buffer_col       ; // max is ifm_width_tile
 	reg [11:0 ] cnt_ofm_row       ; // counter OFM row
 	reg [11:0 ] cnt_row_buffer    ; // ID of first row of kernel, Ex: ifm_height_width = 4 => cnt_row_buffer = 0,1,2,3
+	reg [11:0] cnt_tile_buffer;
 	reg [11:0] cnt_row_ofm_buffer        ; // cnt row of all OFM (not only buffer)
-	reg [11:0] cnt_tile_ifm_row;
 	wire [11:0] cnt_ifm_reload_next;
+	reg [11:0] cnt_ifm_reload;
+	wire [11:0] cnt_ifm_reload_nxt;
+	wire [11:0] cnt_row_ofm_image_nxt; 
+	reg [11:0] cnt_row_ofm_image; 
+	reg [11:0] cnt_ofm_image; // cnt_ofm_image is real ofm row of OFM (different to ofm row of buffer)
+	reg [11:0] cnt_ifm_load;
+	reg [11:0] cnt_channel_read;
+	reg [11:0] cnt_ifm;
+	reg [11:0] cnt_tile_col;
+	wire cnt_channel_read_clr;
+	wire cnt_ifm_load_en;
+	wire cnt_ifm_load_clr;
+	wire axi_read_fire, rlast_cond;
 
     // ============================================================
     // Controller logic
@@ -93,15 +105,12 @@ module buffer_controller #(
 	
 	wire cnt_pixel_match,cnt_row_match, cnt_kernel_match, cnt_ofm_col_buffer_match,cnt_row_ofm_buffer_match;
 	wire cnt_tile_buffer_match; 
-	wire cnt_tile_ifm_row_match;
+//	wire cnt_tile_ifm_row_match;
 	assign cnt_pixel_match   = (cnt_pixel    == (kernel_size - 1    )) ;
 	assign cnt_row_match     = (cnt_row      == (kernel_size - 1    )) ;
 	assign cnt_kernel_match  = (cnt_kernel   == (ifm_channel  - 1    )) ;
-	assign cnt_ofm_col_buffer_match = (cnt_ofm_buffer_col  == (ofm_col_size - 1   )) ;
-	assign cnt_row_ofm_buffer_match = (cnt_row_ofm_buffer  == (ofm_row_size_buffer - 1    )) ;
-	assign cnt_tile_ifm_row_match  = (cnt_row_ofm*stride >= ifm_height_tile-1);
 	assign cnt_tile_buffer_match = (cnt_tile_buffer == ((ifm_width_tile % SA_SIZE) -1) ); 
-	assign cnt_row_ofm_match = (cnt_row_ofm == (ofm_height - 1));
+//	assign cnt_row_ofm_match = (cnt_row_ofm == (ofm_height - 1));
 
 	wire cnt_pixel_en, cnt_pixel_clr;
 	wire cnt_row_en, cnt_row_clr;
@@ -159,75 +168,7 @@ module buffer_controller #(
 													 cnt_row_match && 
 													 cnt_pixel_match;
 
-	//============ COUNTER COLLUM OF OFM ==============//
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n)
-			cnt_ofm_buffer_col <= '0;
-		else if (cnt_ofm_col_clr)
-			cnt_ofm_buffer_col <= '0;
-		else if (cnt_ofm_col_en)
-			cnt_ofm_buffer_col <=cnt_ofm_buffer_col + '1;
-	end
 
-	wire cnt_row_ofm_buffer_clr; 
-	wire cnt_row_ofm_buffer_en; 
-
-	assign cnt_row_ofm_buffer_clr =  cnt_row_ofm_buffer_match && 
-														cnt_ofm_col_buffer_match && 
-														cnt_kernel_match && 
-														cnt_row_match && 
-														cnt_pixel_match;
-
-	assign cnt_row_ofm_buffer_en  = cnt_ofm_col_buffer_match && 
-													 cnt_kernel_match && 
-													 cnt_row_match && 
-													 cnt_pixel_match;
-
-
-	//============ COUNTER TILE OF OFM ROW ==============//
-	assign cnt_tile_ifm_row_clr = cnt_tile_ifm_row_match &&
-		                            cnt_row_ofm_match && 
-																cnt_ofm_col_buffer_match && 
-																cnt_kernel_match && 
-																cnt_row_match && 
-																cnt_pixel_match;
-	assign cnt_tile_ifm_row_en  = cnt_row_ofm_match && 
-		                            cnt_ofm_col_buffer_match && 
-													 			cnt_kernel_match && 
-													 			cnt_row_match && 
-													 			cnt_pixel_match;
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n)
-			cnt_tile_ifm_row <= '0; // cnt row means is that cnt_ofm_buffer
-		else if(cnt_tile_ifm_row_clr)
-			cnt_tile_ifm_row <= '0;
-		else if(cnt_tile_ifm_row_en)
-			cnt_tile_ifm_row <= cnt_tile_ifm_row + '1;
-	end
-
-	// =================================================================
-	// ===================== sliding window address ====================
-	// ================================================================= 
-	wire [11:0] cnt_row_real;
-//	assign cnt_row_real = ((cnt_row + cnt_row_ofm*stride) >= ifm_height_tile*cnt_tile_ifm_row) ? (cnt_row + cnt_row_ofm - ifm_height_tile*cnt_tile_ifm_row) : (cnt_row + cnt_ofm_row*stride); 
-	assign cnt_row_real = ((cnt_row + cnt_row_ofm_image*stride) % ifm_height_tile); 
-	
-	assign ifm_buffer_address_0  = 0*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_1  = 1*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_2  = 2*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_3  = 3*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_4  = 4*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_5  = 5*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_6  = 6*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_7  = 7*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_8  = 8*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_9  = 9*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_10 = 10*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_11 = 11*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_12 = 12*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_13 = 13*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_14 = 14*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
-	assign ifm_buffer_address_15 = 15*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
 
 // =========================
 //   cnt tile buffer: max = ifm_tile_width % SA_SIZE
@@ -241,7 +182,6 @@ module buffer_controller #(
 																cnt_kernel_match &&
 													 			cnt_row_match && 
 													 			cnt_pixel_match;
-	reg [11:0] cnt_tile_buffer;
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)
 			cnt_tile_buffer <= '0;
@@ -251,16 +191,10 @@ module buffer_controller #(
 			cnt_tile_buffer <= cnt_tile_buffer + '1;
 	end
 
-
-	reg [11:0] cnt_ifm_reload;
-	wire [11:0] cnt_ifm_reload_nxt;
-
-
 // ======================= COMPUTE ENABLE AND LOAD ENABLE ==================================//
-
 // COMPUTE BOUNDARY
-
-	reg exe_1row_done_dly1, exe_1row_done_dly2, exe_1row_done_pl;
+	reg exe_1row_done_dly1, exe_1row_done_dly2;
+	wire exe_1row_done_pl;
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)
 			exe_1row_done_dly1  <= 1'b0;
@@ -273,29 +207,27 @@ module buffer_controller #(
 		else 
 			exe_1row_done_dly2 <= exe_1row_done_dly1;
 	end
-	wire cnt_row_ofm_image_nxt; 
+	wire cnt_row_ofm_en;
 	assign exe_1row_done_pl = !exe_1row_done_dly2 && exe_1row_done;
 	assign cnt_row_ofm_en = exe_1row_done_pl;
   assign cnt_row_ofm_image_nxt = cnt_row_ofm_image + 1;
-	assign cnt_row_image_clr = (cnt_row_ofm_image == (ifm_height - 1));
+	assign cnt_row_image_clr = (cnt_row_ofm_image == (ifm_height - 1)) && cnt_tile_buffer_clr;
 
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)
 			cnt_row_ofm_image <= '0;
-		else if (cnt_row_ofm_clr)
+		else if (cnt_row_image_clr)
 			cnt_row_ofm_image <= '0;
 		else if (cnt_row_ofm_en)
 			cnt_row_ofm_image <= cnt_row_ofm_image_nxt;
 	end
 
   wire [11:0] required_end;
-	reg [11:0] cnt_ofm_image; // cnt_ofm_image is real ofm row of OFM (different to ofm row of buffer)
-	wire compute_en = (cnt_load_ifm >= required_end ) ? 1'b1 : 1'b0;
+	assign compute_en = (cnt_ifm_load >= required_end ) ? 1'b1 : 1'b0;
 	assign required_end = (cnt_row_ofm_image + kernel_size); 
 
-	wire prefetch_require;
+	wire [11:0] prefetch_require;
 	wire ifm_req_valid_nxt;
-	reg ifm_req_valid;
 	assign prefetch_require = (cnt_ifm_load - cnt_row_ofm_image);
 	assign ifm_req_valid_nxt    = ifm_req_valid ? rlast_cond : (prefetch_require < ifm_height_tile); // ifm_height_tile is buffer size
 
@@ -306,7 +238,6 @@ module buffer_controller #(
 			ifm_req_valid <= ifm_req_valid_nxt;
 	end
  // ===================== READ EN BUFFER ============================ 
-	reg [15:0] rd_en_buffer;
 	always @(negedge clk or negedge rst_n) begin
 		if(!rst_n)
 			rd_en_buffer <= 16'd0;
@@ -315,7 +246,6 @@ module buffer_controller #(
 	end
 	// ==================== WRITE BUFFER OPERATION: write_address, wr_en=====================================
 	// cnt_ifm_load 
-	wire axi_read_fire, rlast_cond;
 	assign axi_read_fire = RVALID && RREADY;
 	assign rlast_cond = axi_read_fire && RLAST;
 	assign cnt_ifm_load_en = cnt_channel_read_clr;
@@ -357,21 +287,7 @@ module buffer_controller #(
 	assign req_ifm_row     = cnt_ifm_load + 1'b1;
 	assign req_buffer_row  = req_ifm_row % ifm_height_tile;
 
-	// ================ WRITE ADDRESS BUFFER ======================
-	wire [11:0] wr_addr_buffer_nxt;
-	wire [11:0] wr_base_addr;
-	reg [11:0] wr_ifm_addr;
-	assign wr_addr_buffer_nxt = wr_base_addr + cnt_ifm;
-	assign wr_base_addr = req_buffer_row * ifm_width_tile +
-			   ifm_width_tile*ifm_height_tile*cnt_channel_read;
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n) 
-			wr_ifm_addr <= '0;
-		else
-			wr_ifm_addr <= wr_addr_buffer_nxt;
-	end
 	// cnt channel read
-	reg [11:0] cnt_channel_read;
 	assign get_max_channel = (cnt_channel_read == ifm_channel - 1);
 	assign get_max_ifm =  (cnt_ifm == ifm_width_tile - 1);
 	assign cnt_channel_read_clr = get_max_channel && get_max_ifm;
@@ -382,6 +298,19 @@ module buffer_controller #(
 			cnt_channel_read <= '0;
 		else if(rlast_cond)
 			cnt_channel_read <= cnt_channel_read + 1;
+	end
+
+	// ================ WRITE ADDRESS BUFFER ======================
+	wire [11:0] wr_addr_buffer_nxt;
+	wire [11:0] wr_base_addr;
+	assign wr_addr_buffer_nxt = wr_base_addr + cnt_ifm;
+	assign wr_base_addr = req_buffer_row * ifm_width_tile +
+			   ifm_width_tile*ifm_height_tile*cnt_channel_read;
+	always @(posedge clk or negedge rst_n) begin
+		if(!rst_n) 
+			wr_ifm_addr <= '0;
+		else
+			wr_ifm_addr <= wr_addr_buffer_nxt;
 	end
 	// cnt ifm: counting the pixel of each row of buffer (from 0-> 127)
 	always @(posedge clk or negedge rst_n) begin
@@ -395,18 +324,17 @@ module buffer_controller #(
 	// cnt_tile_col: ifm will be vertically load, then shift to right and continue next vertical load.
 	wire cnt_tile_col_en;
 	wire cnt_tile_col_clr;
-	assign cnt_tile_col_en = (cnt_fim_load == (ifm_height - 1)) && rlast;
+	assign cnt_tile_col_en = (cnt_ifm_load == (ifm_height - 1)) && rlast_cond;
 	assign cnt_tile_col_clr = (cnt_tile_col == (ifm_width % ifm_width_tile)) && cnt_ifm_load_clr;
 	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n)
 			cnt_tile_col <= '0;
-		else if(cnt_tile_col_en)
-			cnt_tile_col <= cnt_tile_col + 1;
 		else if(cnt_tile_col_clr)
 			cnt_tile_col <= '0;
+		else if(cnt_tile_col_en)
+			cnt_tile_col <= cnt_tile_col + 1;
 	end
 	// read address: to AXI master
-	reg [11:0] rd_ifm_addr;
 	wire [11:0] rd_ifm_addr_nxt; 
 	assign rd_ifm_addr_nxt = req_ifm_row * ifm_width + cnt_channel_read*ifm_width*ifm_height
 											 + cnt_tile_col * ifm_width_tile - kernel_size + 1; 
@@ -416,5 +344,28 @@ module buffer_controller #(
 		else
  			rd_ifm_addr <= rd_ifm_addr_nxt;
 	end
+
+	// =================================================================
+	// ===================== sliding window address ====================
+	// ================================================================= 
+	wire [11:0] cnt_row_real;
+	assign cnt_row_real = ((cnt_row + cnt_row_ofm_image*stride) % ifm_height_tile); 
+	
+	assign ifm_buffer_address_0  = 0*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_1  = 1*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_2  = 2*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_3  = 3*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_4  = 4*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_5  = 5*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_6  = 6*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_7  = 7*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_8  = 8*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_9  = 9*stride  + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_10 = 10*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_11 = 11*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_12 = 12*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_13 = 13*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_14 = 14*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
+	assign ifm_buffer_address_15 = 15*stride + ifm_width_tile*(cnt_row_real + ifm_height_tile*cnt_kernel) + cnt_pixel + cnt_tile_buffer*SA_SIZE*stride;
 
 endmodule

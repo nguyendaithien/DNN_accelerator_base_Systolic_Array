@@ -1,35 +1,73 @@
-module top();
-        input a,b,c;
+module top #(
+        parameter ADDR_WIDTH = 12,
+        parameter DATA_WIDTH = 16,
+        parameter SYSTOLIC_SIZE = 16,
+        parameter SA_SIZE = 16
+)(
+        M_AXI_ARREADY  ,
+        M_AXI_RDATA    ,
+        M_AXI_RRESP    ,
+        M_AXI_RLAST    ,
+        M_AXI_RVALID   ,
+        M_AXI_AWREADY  ,
+        M_AXI_WREADY   ,
+        M_AXI_BRESP    ,
+        M_AXI_BVALID   ,
+        M_AXI_ARADDR   ,
+        M_AXI_ARLEN    ,
+        M_AXI_ARSIZE   ,
+        M_AXI_ARBURST  ,
+        M_AXI_ARVALID  ,
+        M_AXI_RREADY   ,
+        M_AXI_AWADDR   ,
+        M_AXI_AWLEN    ,
+        M_AXI_AWSIZE   ,
+        M_AXI_AWBURST  ,
+        M_AXI_AWVALID  ,
+        M_AXI_WDATA    ,
+        M_AXI_WSTRB    ,
+        M_AXI_WLAST    ,
+        M_AXI_WVALID   ,
+        M_AXI_BREADY   ,
+  clk,
+        rst_n   
+        );
+
+        input                    clk            ;
+        input                    rst_n          ;
+        input logic  M_AXI_ARREADY  ;
+        input logic  [DATA_WIDTH-1:0] M_AXI_RDATA    ;
+        input logic  [1:0] M_AXI_RRESP    ;
+        input logic  M_AXI_RLAST    ;
+        input logic  M_AXI_RVALID   ;
+        input logic  M_AXI_AWREADY  ;
+        input logic  M_AXI_WREADY   ;
+        input logic  [1:0] M_AXI_BRESP    ;
+        input logic  M_AXI_BVALID   ;
+        output logic [ADDR_WIDTH-1:0] M_AXI_ARADDR   ;
+        output logic [7:0] M_AXI_ARLEN    ;
+        output logic [2:0] M_AXI_ARSIZE   ;
+        output logic [1:0] M_AXI_ARBURST  ;
+        output logic M_AXI_ARVALID  ;
+        output logic M_AXI_RREADY   ;
+        output logic [ADDR_WIDTH-1:0] M_AXI_AWADDR   ;
+        output logic [7:0] M_AXI_AWLEN    ;
+        output logic [2:0] M_AXI_AWSIZE   ;
+        output logic [1:0] M_AXI_AWBURST  ;
+        output logic M_AXI_AWVALID  ;
+        output logic [DATA_WIDTH-1:0] M_AXI_WDATA    ;
+        output logic [DATA_WIDTH/8-1:0] M_AXI_WSTRB    ;
+        output logic M_AXI_WLAST    ;
+        output logic M_AXI_WVALID   ;
+        output logic M_AXI_BREADY   ;
+
+
+        logic [SYSTOLIC_SIZE*DATA_WIDTH-1:0] ifm_in;
+
+
 // Qonnex
         /*AUTOWIRE*/
         // Beginning of automatic wires (for undeclared instantiated-module outputs)
-        logic [ADDR_WIDTH-1:0] M_AXI_ARADDR;    // From axi_master_i1 of AXI_master.v
-        logic [1:0]     M_AXI_ARBURST;          // From axi_master_i1 of AXI_master.v
-        logic [7:0]     M_AXI_ARLEN;            // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_ARREADY;          // From axi_ram_i1 of axi_ram.v
-        logic [2:0]     M_AXI_ARSIZE;           // From axi_master_i1 of AXI_master.v
-        logic           M_AXI_ARVALID;          // From axi_master_i1 of AXI_master.v
-        logic [ADDR_WIDTH-1:0] M_AXI_AWADDR;    // From axi_master_i1 of AXI_master.v
-        logic [1:0]     M_AXI_AWBURST;          // From axi_master_i1 of AXI_master.v
-        logic [7:0]     M_AXI_AWLEN;            // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_AWREADY;          // From axi_ram_i1 of axi_ram.v
-        logic [2:0]     M_AXI_AWSIZE;           // From axi_master_i1 of AXI_master.v
-        logic           M_AXI_AWVALID;          // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_BID;              // From axi_ram_i1 of axi_ram.v
-        logic           M_AXI_BREADY;           // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_BRESP;            // From axi_ram_i1 of axi_ram.v
-        wire            M_AXI_BVALID;           // From axi_ram_i1 of axi_ram.v
-        wire            M_AXI_RDATA;            // From axi_ram_i1 of axi_ram.v
-        wire            M_AXI_RID;              // From axi_ram_i1 of axi_ram.v
-        wire            M_AXI_RLAST;            // From axi_ram_i1 of axi_ram.v
-        logic           M_AXI_RREADY;           // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_RRESP;            // From axi_ram_i1 of axi_ram.v
-        wire            M_AXI_RVALID;           // From axi_ram_i1 of axi_ram.v
-        logic [DATA_WIDTH-1:0] M_AXI_WDATA;     // From axi_master_i1 of AXI_master.v
-        logic           M_AXI_WLAST;            // From axi_master_i1 of AXI_master.v
-        wire            M_AXI_WREADY;           // From axi_ram_i1 of axi_ram.v
-        logic [DATA_WIDTH/8-1:0] M_AXI_WSTRB;   // From axi_master_i1 of AXI_master.v
-        logic           M_AXI_WVALID;           // From axi_master_i1 of AXI_master.v
         wire            compute_en;             // From buffer_controller_i1 of buffer_controller.v
         logic [DATA_WIDTH-1:0] data_out_0;      // From buffer_array_i1 of buffer_array.v
         logic [DATA_WIDTH-1:0] data_out_1;      // From buffer_array_i1 of buffer_array.v
@@ -68,13 +106,13 @@ module top();
         logic [11:0]    ifm_buffer_address_9;   // From buffer_controller_i1 of buffer_controller.v
         logic [DATA_WIDTH-1:0] ifm_data;        // From axi_master_i1 of AXI_master.v
         logic           ifm_data_valid;         // From axi_master_i1 of AXI_master.v
-        wire            ifm_req_valid;          // From buffer_controller_i1 of buffer_controller.v
+        logic           ifm_req_valid;          // From buffer_controller_i1 of buffer_controller.v
         logic           ofm_data_last;          // From axi_master_i1 of AXI_master.v
         wire [SYSTOLIC_SIZE*DATA_WIDTH-1:0] ofm_out;// From PE_array_i1 of PE_array.v
-        logic           rd_en_buffer;           // From buffer_controller_i1 of buffer_controller.v
+        logic [15:0]    rd_en_buffer;           // From buffer_controller_i1 of buffer_controller.v
         logic [11:0]    rd_ifm_addr;            // From buffer_controller_i1 of buffer_controller.v
-        logic [15:0]    reset_pe_1;             // From PE_arr_controller_i1 of PE_arr_controller.v
-        logic [15:0]    reset_pe_2;             // From PE_arr_controller_i1 of PE_arr_controller.v
+        logic [2*SA_SIZE-2:0] reset_pe_1;       // From PE_arr_controller_i1 of PE_arr_controller.v
+        logic [2*SA_SIZE-2:0] reset_pe_2;       // From PE_arr_controller_i1 of PE_arr_controller.v
         logic           sel_out_de_mux;         // From PE_arr_controller_i1 of PE_arr_controller.v
         logic           sel_out_mux;            // From PE_arr_controller_i1 of PE_arr_controller.v
         logic           wgt_data_valid;         // From axi_master_i1 of AXI_master.v
@@ -87,31 +125,47 @@ module top();
    AXI_master AUTO_TEMPLATE (
    .ACLK(clk),
    .ARESETN(rst_n),
+   .M_AXI_ARADDR(M_AXI_ARADDR),
+   .M_AXI_ARLEN(M_AXI_ARLEN),
+   .M_AXI_ARSIZE(M_AXI_ARSIZE),
+   .M_AXI_ARBURST(M_AXI_ARBURST),
+   .M_AXI_ARVALID(M_AXI_ARVALID),
+   .M_AXI_RREADY(M_AXI_RREADY),
+   .M_AXI_AWADDR(M_AXI_AWADDR),
+   .M_AXI_AWLEN(M_AXI_AWLEN),
+   .M_AXI_AWSIZE(M_AXI_AWSIZE),
+   .M_AXI_AWBURST(M_AXI_AWBURST),
+   .M_AXI_AWVALID(M_AXI_AWVALID),
+   .M_AXI_WDATA(M_AXI_WDATA),
+   .M_AXI_WSTRB(M_AXI_WSTRB),
+   .M_AXI_WLAST(M_AXI_WLAST),
+   .M_AXI_WVALID(M_AXI_WVALID),
+   .M_AXI_BREADY(M_AXI_BREADY),
    );
    */
   AXI_master 
   axi_master_i1(/*AUTOINST*/
                 // Outputs
-                .M_AXI_ARADDR           (M_AXI_ARADDR[ADDR_WIDTH-1:0]),
-                .M_AXI_ARLEN            (M_AXI_ARLEN[7:0]),
-                .M_AXI_ARSIZE           (M_AXI_ARSIZE[2:0]),
-                .M_AXI_ARBURST          (M_AXI_ARBURST[1:0]),
-                .M_AXI_ARVALID          (M_AXI_ARVALID),
-                .M_AXI_RREADY           (M_AXI_RREADY),
+                .M_AXI_ARADDR           (M_AXI_ARADDR),          // Templated
+                .M_AXI_ARLEN            (M_AXI_ARLEN),           // Templated
+                .M_AXI_ARSIZE           (M_AXI_ARSIZE),          // Templated
+                .M_AXI_ARBURST          (M_AXI_ARBURST),         // Templated
+                .M_AXI_ARVALID          (M_AXI_ARVALID),         // Templated
+                .M_AXI_RREADY           (M_AXI_RREADY),          // Templated
                 .ifm_data               (ifm_data[DATA_WIDTH-1:0]),
-                .ifm_data_valid         (ifm_data_valid),
                 .wgt_data_valid         (wgt_data_valid),
+                .ifm_data_valid         (ifm_data_valid),
                 .ofm_data_last          (ofm_data_last),
-                .M_AXI_AWADDR           (M_AXI_AWADDR[ADDR_WIDTH-1:0]),
-                .M_AXI_AWLEN            (M_AXI_AWLEN[7:0]),
-                .M_AXI_AWSIZE           (M_AXI_AWSIZE[2:0]),
-                .M_AXI_AWBURST          (M_AXI_AWBURST[1:0]),
-                .M_AXI_AWVALID          (M_AXI_AWVALID),
-                .M_AXI_WDATA            (M_AXI_WDATA[DATA_WIDTH-1:0]),
-                .M_AXI_WSTRB            (M_AXI_WSTRB[DATA_WIDTH/8-1:0]),
-                .M_AXI_WLAST            (M_AXI_WLAST),
-                .M_AXI_WVALID           (M_AXI_WVALID),
-                .M_AXI_BREADY           (M_AXI_BREADY),
+                .M_AXI_AWADDR           (M_AXI_AWADDR),          // Templated
+                .M_AXI_AWLEN            (M_AXI_AWLEN),           // Templated
+                .M_AXI_AWSIZE           (M_AXI_AWSIZE),          // Templated
+                .M_AXI_AWBURST          (M_AXI_AWBURST),         // Templated
+                .M_AXI_AWVALID          (M_AXI_AWVALID),         // Templated
+                .M_AXI_WDATA            (M_AXI_WDATA),           // Templated
+                .M_AXI_WSTRB            (M_AXI_WSTRB),           // Templated
+                .M_AXI_WLAST            (M_AXI_WLAST),           // Templated
+                .M_AXI_WVALID           (M_AXI_WVALID),          // Templated
+                .M_AXI_BREADY           (M_AXI_BREADY),          // Templated
                 // Inputs
                 .ACLK                   (clk),                   // Templated
                 .ARESETN                (rst_n),                 // Templated
@@ -137,8 +191,8 @@ module top();
                        // Outputs
                        .exe_1row_done   (exe_1row_done),
                        .exe_ready       (exe_ready),
-                       .reset_pe_1      (reset_pe_1[15:0]),
-                       .reset_pe_2      (reset_pe_2[15:0]),
+                       .reset_pe_1      (reset_pe_1[2*SA_SIZE-2:0]),
+                       .reset_pe_2      (reset_pe_2[2*SA_SIZE-2:0]),
                        .enable          (enable),
                        .write_out_en    (write_out_en),
                        .sel_out_mux     (sel_out_mux),
@@ -151,6 +205,7 @@ module top();
 
   /*
    PE_array AUTO_TEMPLATE (
+   .wgt_in('0),
    );
    */
   PE_array 
@@ -166,11 +221,27 @@ module top();
               .write_out_en             (write_out_en),
               .sel_out_mux              (sel_out_mux),
               .sel_out_de_mux           (sel_out_de_mux),
-              .wgt_in                   (wgt_in[SYSTOLIC_SIZE*DATA_WIDTH-1:0]),
+              .wgt_in                   ('0),                    // Templated
               .ifm_in                   (ifm_in[SYSTOLIC_SIZE*DATA_WIDTH-1:0]));
 
   /*
    buffer_controller AUTO_TEMPLATE (
+   .RVALID(M_AXI_RVALID),
+   .RLAST(M_AXI_RLAST),
+   .RREADY(M_AXI_RREADY),
+   .RDATA(M_AXI_RDATA),
+   .ifm_channel(12'd3),
+   .kernel_size(12'd3),
+   .num_filter(12'd16),
+   .maxpool_stride(12'd1),
+   .stride(12'd1),
+   .ifm_width_tile(12'd128),
+   .ifm_height_tile(12'd9),
+   .ofm_width(12'd416),
+   .ofm_height(12'd416),
+   .ifm_width(12'd418),
+   .ifm_height(12'd418),
+   .num_channel(12'd16),
    );
    */
   buffer_controller 
@@ -180,7 +251,7 @@ module top();
                        .wr_ifm_addr     (wr_ifm_addr[11:0]),
                        .rd_ifm_addr     (rd_ifm_addr[11:0]),
                        .wr_en_buffer    (wr_en_buffer),
-                       .rd_en_buffer    (rd_en_buffer),
+                       .rd_en_buffer    (rd_en_buffer[15:0]),
                        .ifm_buffer_address_0(ifm_buffer_address_0[11:0]),
                        .ifm_buffer_address_1(ifm_buffer_address_1[11:0]),
                        .ifm_buffer_address_2(ifm_buffer_address_2[11:0]),
@@ -201,23 +272,23 @@ module top();
                        // Inputs
                        .clk             (clk),
                        .rst_n           (rst_n),
-                       .ifm_channel     (ifm_channel[10:0]),
-                       .kernel_size     (kernel_size[3:0]),
-                       .num_filter      (num_filter[7:0]),
-                       .maxpool_stride  (maxpool_stride[1:0]),
-                       .stride          (stride[2:0]),
-                       .ifm_width_tile  (ifm_width_tile[11:0]),
-                       .ifm_height_tile (ifm_height_tile[11:0]),
-                       .ofm_width       (ofm_width[11:0]),
-                       .ofm_height      (ofm_height[11:0]),
-                       .ifm_width       (ifm_width[11:0]),
-                       .ifm_height      (ifm_height[11:0]),
-                       .num_channel     (num_channel[11:0]),
+                       .ifm_channel     (12'd3),                 // Templated
+                       .kernel_size     (12'd3),                 // Templated
+                       .num_filter      (12'd16),                // Templated
+                       .maxpool_stride  (12'd1),                 // Templated
+                       .stride          (12'd1),                 // Templated
+                       .ifm_width_tile  (12'd128),               // Templated
+                       .ifm_height_tile (12'd9),                 // Templated
+                       .ofm_width       (12'd416),               // Templated
+                       .ofm_height      (12'd416),               // Templated
+                       .ifm_width       (12'd418),               // Templated
+                       .ifm_height      (12'd418),               // Templated
+                       .num_channel     (12'd16),                // Templated
                        .exe_1row_done   (exe_1row_done),
-                       .RVALID          (RVALID),
-                       .RLAST           (RLAST),
-                       .RREADY          (RREADY),
-                       .RDATA           (RDATA[15:0]),
+                       .RVALID          (M_AXI_RVALID),          // Templated
+                       .RLAST           (M_AXI_RLAST),           // Templated
+                       .RREADY          (M_AXI_RREADY),          // Templated
+                       .RDATA           (M_AXI_RDATA),           // Templated
                        .ifm_data_valid  (ifm_data_valid),
                        .wgt_data_valid  (wgt_data_valid),
                        .ofm_data_valid  (ofm_data_valid));
@@ -227,7 +298,7 @@ module top();
    .read_en(rd_en_buffer),
    .write_en(wr_en_buffer),
    .write_addr(wr_ifm_addr),
-   .data_in(RDATA),
+   .data_in(M_AXI_RDATA),
    .read_addr_0(ifm_buffer_address_0),
    .read_addr_1(ifm_buffer_address_1),
    .read_addr_2(ifm_buffer_address_2),
@@ -270,7 +341,7 @@ module top();
                   .rst_n                (rst_n),
                   .read_en              (rd_en_buffer),          // Templated
                   .write_en             (wr_en_buffer),          // Templated
-                  .data_in              (RDATA),                 // Templated
+                  .data_in              (M_AXI_RDATA),           // Templated
                   .write_addr           (wr_ifm_addr),           // Templated
                   .read_addr_0          (ifm_buffer_address_0),  // Templated
                   .read_addr_1          (ifm_buffer_address_1),  // Templated
@@ -288,89 +359,6 @@ module top();
                   .read_addr_13         (ifm_buffer_address_13), // Templated
                   .read_addr_14         (ifm_buffer_address_14), // Templated
                   .read_addr_15         (ifm_buffer_address_15)); // Templated
-
-  /*
-   axi_ram AUTO_TEMPLATE (
-   .clk(ACLK),
-   .rst(~ARESETN),
-   .s_axi_awid(8'd0),
-   .s_axi_awaddr(M_AXI_AWADDR),
-   .s_axi_awlen(M_AXI_AWLEN),
-   .s_axi_awsize(M_AXI_AWSIZE),
-   .s_axi_awburst(M_AXI_AWBURST),
-   .s_axi_awlock(1'b0),
-   .s_axi_awcache(4'b0010),
-   .s_axi_awprot(3'b000),
-   .s_axi_awvalid(M_AXI_AWVALID),
-   .s_axi_awready(M_AXI_AWREADY),
-   .s_axi_wdata(M_AXI_WDATA),
-   .s_axi_wstrb(M_AXI_WSTRB),
-   .s_axi_wlast(M_AXI_WLAST),
-   .s_axi_wvalid(M_AXI_WVALID),
-   .s_axi_wready(M_AXI_WREADY),
-   .s_axi_bid(M_AXI_BID),
-   .s_axi_bresp(M_AXI_BRESP),
-   .s_axi_bvalid(M_AXI_BVALID),
-   .s_axi_bready(M_AXI_BREADY),
-   .s_axi_arid(8'd0),
-   .s_axi_araddr(M_AXI_ARADDR),
-   .s_axi_arlen(M_AXI_ARLEN),
-   .s_axi_arsize(M_AXI_ARSIZE),
-   .s_axi_arburst(M_AXI_ARBURST),
-   .s_axi_arlock(1'b0),
-   .s_axi_arcache(4'b0010),
-   .s_axi_arprot(3'b000),
-   .s_axi_arvalid(M_AXI_ARVALID),
-   .s_axi_arready(M_AXI_ARREADY),
-   .s_axi_rid(M_AXI_RID),
-   .s_axi_rdata(M_AXI_RDATA),
-   .s_axi_rresp(M_AXI_RRESP),
-   .s_axi_rlast(M_AXI_RLAST),
-   .s_axi_rvalid(M_AXI_RVALID),
-   .s_axi_rready(M_AXI_RREADY),
-   );
-   */
-  axi_ram 
-  axi_ram_i1(/*AUTOINST*/
-             // Outputs
-             .s_axi_awready             (M_AXI_AWREADY),         // Templated
-             .s_axi_wready              (M_AXI_WREADY),          // Templated
-             .s_axi_bid                 (M_AXI_BID),             // Templated
-             .s_axi_bresp               (M_AXI_BRESP),           // Templated
-             .s_axi_bvalid              (M_AXI_BVALID),          // Templated
-             .s_axi_arready             (M_AXI_ARREADY),         // Templated
-             .s_axi_rid                 (M_AXI_RID),             // Templated
-             .s_axi_rdata               (M_AXI_RDATA),           // Templated
-             .s_axi_rresp               (M_AXI_RRESP),           // Templated
-             .s_axi_rlast               (M_AXI_RLAST),           // Templated
-             .s_axi_rvalid              (M_AXI_RVALID),          // Templated
-             // Inputs
-             .clk                       (ACLK),                  // Templated
-             .rst                       (~ARESETN),              // Templated
-             .s_axi_awid                (8'd0),                  // Templated
-             .s_axi_awaddr              (M_AXI_AWADDR),          // Templated
-             .s_axi_awlen               (M_AXI_AWLEN),           // Templated
-             .s_axi_awsize              (M_AXI_AWSIZE),          // Templated
-             .s_axi_awburst             (M_AXI_AWBURST),         // Templated
-             .s_axi_awlock              (1'b0),                  // Templated
-             .s_axi_awcache             (4'b0010),               // Templated
-             .s_axi_awprot              (3'b000),                // Templated
-             .s_axi_awvalid             (M_AXI_AWVALID),         // Templated
-             .s_axi_wdata               (M_AXI_WDATA),           // Templated
-             .s_axi_wstrb               (M_AXI_WSTRB),           // Templated
-             .s_axi_wlast               (M_AXI_WLAST),           // Templated
-             .s_axi_wvalid              (M_AXI_WVALID),          // Templated
-             .s_axi_bready              (M_AXI_BREADY),          // Templated
-             .s_axi_arid                (8'd0),                  // Templated
-             .s_axi_araddr              (M_AXI_ARADDR),          // Templated
-             .s_axi_arlen               (M_AXI_ARLEN),           // Templated
-             .s_axi_arsize              (M_AXI_ARSIZE),          // Templated
-             .s_axi_arburst             (M_AXI_ARBURST),         // Templated
-             .s_axi_arlock              (1'b0),                  // Templated
-             .s_axi_arcache             (4'b0010),               // Templated
-             .s_axi_arprot              (3'b000),                // Templated
-             .s_axi_arvalid             (M_AXI_ARVALID),         // Templated
-             .s_axi_rready              (M_AXI_RREADY));                 // Templated
 
 endmodule
 

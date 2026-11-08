@@ -37,7 +37,6 @@ module AXI_master #(
     // Read data output to Buffer
     // =========================================================
     output logic [DATA_WIDTH-1:0]  ifm_data,
-    output logic                   ifm_data_valid,
     output logic                   wgt_data_valid,
     output logic                   ifm_data_valid,
     output logic                   ofm_data_last,
@@ -72,6 +71,7 @@ module AXI_master #(
 	localparam [2:0] READ_IDLE = 3'b000;
 	localparam [2:0] READ_ADDR = 3'b001;
 	localparam [2:0] READ_DATA = 3'b010;
+	reg ifm_data_last;
 	
 	reg [2:0] read_state;
 	always @(posedge ACLK or negedge ARESETN) begin
